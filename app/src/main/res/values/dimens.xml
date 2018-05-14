@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="text_size_desc">15dp</dimen>
+    <dimen name="text_size">20dp</dimen>
+    <dimen name="text_cap_size">30dp</dimen>
+    <dimen name="margin_cap_top">100dp</dimen>
+    <dimen name="margin_cap">10dp</dimen>
+    <dimen name="avatar_size">95dp</dimen>
+    <dimen name="image_size">25dp</dimen>
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.gmail.vanyadubik.gitsearch.activity.SearchActivity">
+
+
+    <LinearLayout
+        android:id="@+id/container_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_cap_top"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_margin="@dimen/margin_cap"
+            android:textSize="@dimen/text_cap_size"
+            android:textColor="@color/colorAccent"
+            android:text="@string/project_name"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.gmail.vanyadubik.gitsearch.ui.DrawableEditText
+                android:id="@+id/search_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_cap"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:textColor="@color/colorAccent"
+                android:hint="@string/github_repository"
+                android:textSize="@dimen/text_size"
+                app:drawableRightCompat="@drawable/ic_clear"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_searc_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="2dp"
+            android:layout_margin="@dimen/margin_cap">
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>
