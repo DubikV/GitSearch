@@ -1,6 +1,8 @@
 package com.gmail.vanyadubik.gitsearch.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,30 +21,33 @@ import com.gmail.vanyadubik.gitsearch.adapter.OrgRecyclerAdapter;
 import com.gmail.vanyadubik.gitsearch.app.GSApplication;
 import com.gmail.vanyadubik.gitsearch.model.db.DataBase;
 import com.gmail.vanyadubik.gitsearch.model.db.Owner;
-import com.gmail.vanyadubik.gitsearch.model.json.DownloadResponse;
-import com.gmail.vanyadubik.gitsearch.service.sync.SyncService;
-import com.gmail.vanyadubik.gitsearch.service.sync.SyncServiceFactory;
+import com.gmail.vanyadubik.gitsearch.model.db.Repository;
+import com.gmail.vanyadubik.gitsearch.service.sync.SyncIntentService;
+import com.gmail.vanyadubik.gitsearch.service.sync.SyncReceiver;
 import com.gmail.vanyadubik.gitsearch.utils.ActivityUtils;
 import com.gmail.vanyadubik.gitsearch.utils.ErrorUtils;
 import com.gmail.vanyadubik.gitsearch.utils.NetworkUtils;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class SearchActivity extends AppCompatActivity {
+import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_ERROR_SYNC;
+import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_FINISHED_SYNC;
+import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_STARTED_SYNC;
+import static com.gmail.vanyadubik.gitsearch.service.sync.SyncIntentService.SYNC_FILTER_SEARCH;
+import static com.gmail.vanyadubik.gitsearch.service.sync.SyncIntentService.SYNC_RECEIVER;
+
+public class SearchActivity extends AppCompatActivity implements SyncReceiver.Receiver {
 
 
     @Inject
@@ -114,62 +119,126 @@ public class SearchActivity extends AppCompatActivity {
 
     private void startSync(){
 
-        if (!networkUtils.checkEthernet()) {
-            activityUtils.showMessage(getResources().getString(R.string.error_internet_connecting), this);
-            return;
-        }
+        SyncReceiver mReceiver = new SyncReceiver(new Handler(), this);
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, SyncIntentService.class);
+        intent.putExtra(SYNC_RECEIVER, mReceiver);
+        intent.putExtra(SYNC_FILTER_SEARCH, searchET.getText().toString());
+        startService(intent);
 
-        SyncService syncService = SyncServiceFactory.createService(
-                SyncService.class, SearchActivity.this);
-
-        Map<String, String> paramsUrl = new HashMap<String, String>();
-        paramsUrl.put("q", searchET.getText().toString());
-        paramsUrl.put("sort", "stars");
-        paramsUrl.put("order", "desc");
-
-        observable = syncService.download(paramsUrl);
-        observable.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadResponse>(){
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-                    @Override
-                    public void onNext(DownloadResponse downloadResponse) {
-                        if(downloadResponse == null) {
-                            activityUtils.showMessage(getResources().getString(R.string.error_no_data_search), SearchActivity.this);
-                            contSync.setVisibility(View.GONE);
-                            contSearch.setVisibility(View.VISIBLE);
-                            return;
-                        }
-                        if(downloadResponse.getItems().size()==0) {
-                            activityUtils.showMessage(getResources().getString(R.string.error_no_data_search), SearchActivity.this);
-                            contSync.setVisibility(View.GONE);
-                            contSearch.setVisibility(View.VISIBLE);
-                            return;
-                        }
-                        updateDb(downloadResponse);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (!networkUtils.checkEthernet()) {
-                            activityUtils.showMessage(
-                                    getResources().getString(R.string.error_internet_connecting), SearchActivity.this);
-                            return;
-                        }
-                        activityUtils.showMessage(e.getMessage(),
-                                SearchActivity.this);
-
-                        contSync.setVisibility(View.GONE);
-                        contSearch.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+//        if (!networkUtils.checkEthernet()) {
+//            activityUtils.showMessage(getResources().getString(R.string.error_internet_connecting), this);
+//            return;
+//        }
+//
+//        SyncService syncService = SyncServiceFactory.createService(
+//                SyncService.class, SearchActivity.this);
+//
+//        Map<String, String> paramsUrl = new HashMap<String, String>();
+//        paramsUrl.put("q", searchET.getText().toString());
+//        paramsUrl.put("sort", "stars");
+//        paramsUrl.put("order", "desc");
+//
+//        observable = syncService.search(paramsUrl);
+//        observable.subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<DownloadResponse>(){
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//                    @Override
+//                    public void onNext(DownloadResponse downloadResponse) {
+//                        if(downloadResponse == null) {
+//                            activityUtils.showMessage(getResources().getString(R.string.error_no_data_search),
+//                                    SearchActivity.this);
+//                            contSync.setVisibility(View.GONE);
+//                            contSearch.setVisibility(View.VISIBLE);
+//                            return;
+//                        }
+//                        if(downloadResponse.getItems().size()==0) {
+//                            activityUtils.showMessage(getResources().getString(R.string.error_no_data_search),
+//                                    SearchActivity.this);
+//                            contSync.setVisibility(View.GONE);
+//                            contSearch.setVisibility(View.VISIBLE);
+//                            return;
+//                        }
+//
+//                        final List<Repository> repositories = convertRepositoryList(downloadResponse.getItems(),
+//                                searchET.getText().toString());
+//                        for(ResultItemDTO resultItemDTO : downloadResponse.getItems()){
+//
+//                            SyncService syncService = SyncServiceFactory.createService(
+//                                    SyncService.class, SearchActivity.this);
+//
+//                            observable = syncService.getOwner(resultItemDTO.getOwner().getUrl());
+//                            observable.subscribeOn(Schedulers.newThread())
+//                                    .observeOn(AndroidSchedulers.mainThread())
+//                                    .subscribe(new Observer<DownloadResponse>(){
+//                                        @Override
+//                                        public void onSubscribe(Disposable d) {
+//
+//                                        }
+//                                        @Override
+//                                        public void onNext(DownloadResponse downloadResponse) {
+//                                            if (downloadResponse == null) {
+//                                                activityUtils.showMessage(getResources().getString(R.string.error_no_data_search),
+//                                                        SearchActivity.this);
+//                                                contSync.setVisibility(View.GONE);
+//                                                contSearch.setVisibility(View.VISIBLE);
+//                                                return;
+//                                            }
+//                                            if (downloadResponse.getItems().size() == 0) {
+//                                                activityUtils.showMessage(getResources().getString(R.string.error_no_data_search),
+//                                                        SearchActivity.this);
+//                                                contSync.setVisibility(View.GONE);
+//                                                contSearch.setVisibility(View.VISIBLE);
+//                                                return;
+//                                            }
+//
+//                                        }
+//
+//                                        @Override
+//                                        public void onError(Throwable e) {
+//                                            if (!networkUtils.checkEthernet()) {
+//                                                activityUtils.showMessage(
+//                                                        getResources().getString(R.string.error_internet_connecting), SearchActivity.this);
+//                                                    return;
+//                                                }
+//                                                activityUtils.showMessage(e.getMessage(),
+//                                                        SearchActivity.this);
+//
+//                                                contSync.setVisibility(View.GONE);
+//                                                contSearch.setVisibility(View.VISIBLE);
+//                                            }
+//
+//                                            @Override
+//                                            public void onComplete() {
+//                                            }
+//                                        });
+//
+//                        }
+//
+//                        updateDb(repositories);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (!networkUtils.checkEthernet()) {
+//                            activityUtils.showMessage(
+//                                    getResources().getString(R.string.error_internet_connecting), SearchActivity.this);
+//                            return;
+//                        }
+//                        activityUtils.showMessage(e.getMessage(),
+//                                SearchActivity.this);
+//
+//                        contSync.setVisibility(View.GONE);
+//                        contSearch.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                    }
+//                });
     }
 
     private void searchData(){
@@ -179,8 +248,8 @@ public class SearchActivity extends AppCompatActivity {
             return;
         }
 
-        contSync.setVisibility(View.VISIBLE);
-        contSearch.setVisibility(View.GONE);
+//        contSync.setVisibility(View.VISIBLE);
+//        contSearch.setVisibility(View.GONE);
         dataBase.ownerDao().getByTextSearch(searchET.getText().toString())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Owner>>() {
@@ -194,22 +263,22 @@ public class SearchActivity extends AppCompatActivity {
                         adapter = new OrgRecyclerAdapter(SearchActivity.this, owners);
                         recyclerView.setAdapter(adapter);
 
-                        contSync.setVisibility(View.GONE);
-                        contSearch.setVisibility(View.VISIBLE);
+//                        contSync.setVisibility(View.GONE);
+//                        contSearch.setVisibility(View.VISIBLE);
                     }
 
                 });
 
     }
 
-    private void updateDb(final DownloadResponse response) {
+    private void updateDb(final List<Repository> repositories) {
 
         Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
                 dataBase.ownerDao().deleteAll();
                 dataBase.repositoryDao().deleteAll();
-            //    ownerDao.insertList(convertRepositoryList(response.getItems(), searchET.getText().toString()));
+                dataBase.repositoryDao().insertList(repositories);
             }
         }).observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
@@ -222,5 +291,40 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onError(Throwable e) {}
         });
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+
+        switch (resultCode) {
+            case STATUS_STARTED_SYNC:
+//                userLayout.setVisibility(View.GONE);
+//                getSupportActionBar().setTitle(getResources().getString(R.string.download)+": "+nameUserTV.getText());
+//                isSync = true;
+                break;
+            case STATUS_FINISHED_SYNC:
+//                initDataToCap();
+//                serviceDataList.clear();
+//                initDataToListView();
+//                userLayout.setVisibility(View.VISIBLE);
+//                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+//                listView.onRefreshComplete();
+//                isSync = false;
+
+                searchData();
+
+                break;
+            case STATUS_ERROR_SYNC:
+//                String error = resultData.getString(Intent.EXTRA_TEXT);
+//                activityUtils.showMessage(error, this);
+//
+//                userLayout.setVisibility(View.VISIBLE);
+//                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+//                listView.onRefreshComplete();
+//                isSync = false;
+
+                break;
+        }
+
     }
 }

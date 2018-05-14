@@ -2,6 +2,7 @@ package com.gmail.vanyadubik.gitsearch.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,11 @@ public class OrgRecyclerAdapter extends RecyclerView.Adapter {
 
             ((OrgViewHolder) holder).location.setText(owner.getLocation());
 
-            ((OrgViewHolder) holder).blog.setText(owner.getBlog());
+            String blog = owner.getBlog();
+            ((OrgViewHolder) holder).blog.setText(!TextUtils.isEmpty(blog) ?
+                    blog.substring(0, owner.getBlog().length() - 1)
+                            .replace("http://","")
+                            .replace("https://",""): "");
 
             Glide.with(context).
                     load(owner.getAvatar() == null ? android.R.drawable.ic_menu_gallery : owner.getAvatar())

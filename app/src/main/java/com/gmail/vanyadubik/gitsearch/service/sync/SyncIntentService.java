@@ -10,6 +10,7 @@ import com.gmail.vanyadubik.gitsearch.app.GSApplication;
 import com.gmail.vanyadubik.gitsearch.model.APIError;
 import com.gmail.vanyadubik.gitsearch.model.db.DataBase;
 import com.gmail.vanyadubik.gitsearch.model.json.DownloadResponse;
+import com.gmail.vanyadubik.gitsearch.model.json.OwnerDTO;
 import com.gmail.vanyadubik.gitsearch.model.json.ResultItemDTO;
 import com.gmail.vanyadubik.gitsearch.utils.ErrorUtils;
 import com.gmail.vanyadubik.gitsearch.utils.NetworkUtils;
@@ -25,6 +26,7 @@ import retrofit2.Response;
 import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_ERROR_SYNC;
 import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_FINISHED_SYNC;
 import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_STARTED_SYNC;
+import static com.gmail.vanyadubik.gitsearch.utils.Json2DbModelConverter.convertOwner;
 import static com.gmail.vanyadubik.gitsearch.utils.Json2DbModelConverter.convertRepository;
 
 
@@ -41,6 +43,8 @@ public class SyncIntentService extends IntentService {
 
     private SyncService syncService;
     private String searchFilter;
+    private ResultReceiver receiver;
+    private Bundle bundle;
 
     public SyncIntentService() {
         super(SyncIntentService.class.getName());
@@ -55,9 +59,9 @@ public class SyncIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final ResultReceiver receiver = intent.getParcelableExtra(SYNC_RECEIVER);
+        receiver = intent.getParcelableExtra(SYNC_RECEIVER);
         searchFilter = intent.getStringExtra(SYNC_FILTER_SEARCH);
-        final Bundle bundle = new Bundle();
+        bundle = new Bundle();
 
         if (!networkUtils.checkEthernet()) {
             bundle.putString(Intent.EXTRA_TEXT, getResources().getString(R.string.error_internet_connecting));
@@ -75,7 +79,7 @@ public class SyncIntentService extends IntentService {
                 this.getBaseContext());
         receiver.send(STATUS_STARTED_SYNC, bundle);
         try {
-            Response<DownloadResponse> downloadResponse = syncService.download1(paramsUrl).execute();
+            Response<DownloadResponse> downloadResponse = syncService.search(paramsUrl).execute();
             if (downloadResponse.isSuccessful()) {
                 DownloadResponse body = downloadResponse.body();
                 if(body == null) {
@@ -108,11 +112,33 @@ public class SyncIntentService extends IntentService {
     private void updateDb(DownloadResponse response) {
         List<ResultItemDTO> resultItemDTOList = response.getItems();
 
+        dataBase.ownerDao().deleteAll();
         dataBase.repositoryDao().deleteAll();
 
         for (ResultItemDTO resultItemDTO : resultItemDTOList) {
             dataBase.repositoryDao().insert(convertRepository(resultItemDTO, searchFilter));
+
+            try {
+                Response<OwnerDTO> ownerResponse = syncService.getOwner(resultItemDTO.getOwner().getUrl()).execute();
+                if (ownerResponse.isSuccessful()) {
+                    updateOwner(ownerResponse.body());
+                } else {
+                    APIError error = errorUtils.parseErrorCode(ownerResponse.code());
+                    bundle.putString(Intent.EXTRA_TEXT, error.getMessage());
+                    receiver.send(STATUS_ERROR_SYNC, bundle);
+
+                }
+            } catch (Exception exception) {
+                APIError error = errorUtils.parseErrorMessage(exception);
+                bundle.putString(Intent.EXTRA_TEXT, error.getMessage());
+                receiver.send(STATUS_ERROR_SYNC, bundle);
+            }
+
         }
+    }
+
+    private void updateOwner(OwnerDTO ownerDTO) {
+        dataBase.ownerDao().insert(convertOwner(ownerDTO, searchFilter));
     }
 
 }

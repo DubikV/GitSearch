@@ -8,9 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "repository")
 public class Repository {
 
-    @PrimaryKey(autoGenerate = true)
-    private int uid;
-
+    @PrimaryKey
     @ColumnInfo(name = "id")
     private int id;
 
@@ -71,14 +69,6 @@ public class Repository {
         this.defBranch = defBranch;
         this.ownerId = ownerId;
         this.nameFilter = nameFilter;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
     }
 
     public int getId() {

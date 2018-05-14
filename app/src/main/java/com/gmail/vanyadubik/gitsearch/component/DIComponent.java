@@ -17,6 +17,6 @@ import dagger.Component;
         ServiceApiModule.class, ActivityUtilsApiModule.class,
         NetworkUtilsApiModule.class, ErrorUtilsApiModule.class})
 public interface DIComponent {
-    void inject(SearchActivity searchActivity);
     void inject(SyncIntentService syncIntentService);
+    void inject(SearchActivity searchActivity);
 }

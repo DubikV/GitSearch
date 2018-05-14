@@ -8,9 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "owner")
 public class Owner {
 
-    @PrimaryKey(autoGenerate = true)
-    private int uid;
-
+    @PrimaryKey
     @ColumnInfo(name = "id")
     private int id;
 
@@ -32,9 +30,8 @@ public class Owner {
     @ColumnInfo(name = "name_filter")
     private String nameFilter;
 
-    public Owner(int uid, int id, String login, String avatar,
+    public Owner(int id, String login, String avatar,
                  String htmlUrl, String blog, String location, String nameFilter) {
-        this.uid = uid;
         this.id = id;
         this.login = login;
         this.avatar = avatar;
@@ -42,14 +39,6 @@ public class Owner {
         this.blog = blog;
         this.location = location;
         this.nameFilter = nameFilter;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
     }
 
     public int getId() {
