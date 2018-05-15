@@ -6,12 +6,13 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
+
 import com.gmail.vanyadubik.gitsearch.R;
 
 
-public class DrawableEditText extends AppCompatEditText {
+public class DrawableEditText extends AppCompatAutoCompleteTextView {
 
     public DrawableEditText(Context context) {
         super(context);

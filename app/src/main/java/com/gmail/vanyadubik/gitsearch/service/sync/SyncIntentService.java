@@ -9,12 +9,16 @@ import com.gmail.vanyadubik.gitsearch.R;
 import com.gmail.vanyadubik.gitsearch.app.GSApplication;
 import com.gmail.vanyadubik.gitsearch.model.APIError;
 import com.gmail.vanyadubik.gitsearch.model.db.DataBase;
+import com.gmail.vanyadubik.gitsearch.model.db.Owner;
+import com.gmail.vanyadubik.gitsearch.model.db.Repository;
+import com.gmail.vanyadubik.gitsearch.model.db.SearchHistory;
 import com.gmail.vanyadubik.gitsearch.model.json.DownloadResponse;
 import com.gmail.vanyadubik.gitsearch.model.json.OwnerDTO;
 import com.gmail.vanyadubik.gitsearch.model.json.ResultItemDTO;
 import com.gmail.vanyadubik.gitsearch.utils.ErrorUtils;
 import com.gmail.vanyadubik.gitsearch.utils.NetworkUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,9 +96,9 @@ public class SyncIntentService extends IntentService {
                     receiver.send(STATUS_ERROR_SYNC, bundle);
                     return;
                 }
-                updateDb(body);
-                bundle.putString(Intent.EXTRA_TEXT, getResources().getString(R.string.sync_success));
-                receiver.send(STATUS_FINISHED_SYNC, bundle);
+                if(updateDb(body)) {
+                    receiver.send(STATUS_FINISHED_SYNC, bundle);
+                }
             } else {
                 APIError error = errorUtils.parseErrorCode(downloadResponse.code());
                 bundle.putString(Intent.EXTRA_TEXT, error.getMessage());
@@ -109,14 +113,19 @@ public class SyncIntentService extends IntentService {
 
     }
 
-    private void updateDb(DownloadResponse response) {
+    private boolean updateDb(DownloadResponse response) {
         List<ResultItemDTO> resultItemDTOList = response.getItems();
 
         dataBase.ownerDao().deleteAll();
         dataBase.repositoryDao().deleteAll();
+        dataBase.searchHistoryDao().delete(searchFilter);
+        dataBase.searchHistoryDao().insert(new SearchHistory(searchFilter, new Date().getTime()));
 
         for (ResultItemDTO resultItemDTO : resultItemDTOList) {
-            dataBase.repositoryDao().insert(convertRepository(resultItemDTO, searchFilter));
+            Repository repository = convertRepository(resultItemDTO);
+            if(dataBase.repositoryDao().getById(repository.getId())==null) {
+                dataBase.repositoryDao().insert(repository);
+            }
 
             try {
                 Response<OwnerDTO> ownerResponse = syncService.getOwner(resultItemDTO.getOwner().getUrl()).execute();
@@ -126,19 +135,24 @@ public class SyncIntentService extends IntentService {
                     APIError error = errorUtils.parseErrorCode(ownerResponse.code());
                     bundle.putString(Intent.EXTRA_TEXT, error.getMessage());
                     receiver.send(STATUS_ERROR_SYNC, bundle);
-
+                    return false;
                 }
             } catch (Exception exception) {
                 APIError error = errorUtils.parseErrorMessage(exception);
                 bundle.putString(Intent.EXTRA_TEXT, error.getMessage());
                 receiver.send(STATUS_ERROR_SYNC, bundle);
+                return false;
             }
 
         }
+        return true;
     }
 
     private void updateOwner(OwnerDTO ownerDTO) {
-        dataBase.ownerDao().insert(convertOwner(ownerDTO, searchFilter));
+        Owner owner = convertOwner(ownerDTO);
+        if(dataBase.ownerDao().getById(owner.getId())==null) {
+            dataBase.ownerDao().insert(owner);
+        }
     }
 
 }

@@ -16,8 +16,11 @@ public interface OwnerDao {
     @Query("SELECT COUNT(*) from owner")
     int count();
 
-    @Query("SELECT * FROM owner WHERE name_filter = :textSearch")
-    Flowable<List<Owner>> getByTextSearch(String textSearch);
+    @Query("SELECT * FROM owner WHERE id = :id")
+    Flowable<Owner> getFlowableById(int id);
+
+    @Query("SELECT * FROM owner WHERE id = :id")
+    Owner getById(int id);
 
     @Insert
     void insert(Owner... owners);

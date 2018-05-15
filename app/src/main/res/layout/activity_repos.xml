@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.gmail.vanyadubik.gitsearch.activity.ReposActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_repos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@null"
+        android:dividerHeight="2dp"
+        android:layout_margin="@dimen/margin_cap">
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/owner_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:src="@drawable/ic_arrow_upward"
+        android:layout_marginRight="@dimen/margin_fab"
+        android:layout_marginBottom="@dimen/margin_fab"
+        android:layout_gravity="bottom|end"
+        app:fabSize="auto"
+        app:elevation="0dp"/>
+
+</android.support.design.widget.CoordinatorLayout>

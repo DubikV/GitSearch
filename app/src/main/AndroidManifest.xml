@@ -29,6 +29,16 @@
         <service
             android:name=".service.sync.SyncIntentService"
             android:exported="false" />
+        <activity
+            android:name=".activity.ReposActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize"
+            android:parentActivityName=".activity.SearchActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.SearchActivity" />
+
+        </activity>
 
     </application>
 

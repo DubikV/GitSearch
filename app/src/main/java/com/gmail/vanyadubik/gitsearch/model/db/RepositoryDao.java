@@ -16,8 +16,11 @@ public interface RepositoryDao {
     @Query("SELECT COUNT(*) from repository")
     int count();
 
-    @Query("SELECT * FROM repository WHERE name_filter = :textSearch")
-    Flowable<List<Repository>> getByTextSearch(String textSearch);
+    @Query("SELECT * FROM repository WHERE id = :id")
+    Repository getById(int id);
+
+    @Query("SELECT * FROM repository WHERE owner_id = :ownerId")
+    Flowable<List<Repository>> getByOwnerId(int ownerId);
 
     @Insert
     void insert(Repository... repositories);

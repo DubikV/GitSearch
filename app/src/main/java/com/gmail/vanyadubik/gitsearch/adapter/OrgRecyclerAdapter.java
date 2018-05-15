@@ -1,6 +1,8 @@
 package com.gmail.vanyadubik.gitsearch.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,9 +14,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.gmail.vanyadubik.gitsearch.R;
+import com.gmail.vanyadubik.gitsearch.activity.ReposActivity;
 import com.gmail.vanyadubik.gitsearch.model.db.Owner;
 
 import java.util.List;
+
+import static com.gmail.vanyadubik.gitsearch.activity.ReposActivity.REPOS_ACTIVITY_PARAM_OWNER_ID;
 
 public class OrgRecyclerAdapter extends RecyclerView.Adapter {
 
@@ -52,7 +57,7 @@ public class OrgRecyclerAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int listPosition) {
 
-        Owner owner = getOwner(listPosition);
+        final Owner owner = getOwner(listPosition);
         if (owner != null) {
             ((OrgViewHolder) holder).login.setText(owner.getLogin());
 
@@ -69,6 +74,17 @@ public class OrgRecyclerAdapter extends RecyclerView.Adapter {
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(((OrgViewHolder)holder).mAvatar);
+
+            ((OrgViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ReposActivity.class);
+                    intent.putExtra(REPOS_ACTIVITY_PARAM_OWNER_ID, owner.getId());
+                    Activity activity = (Activity) context;
+                    activity.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.right_in, R.anim.left_out);
+                }
+            });
         }
     }
 

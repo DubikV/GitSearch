@@ -1,36 +1,28 @@
 <resources>
     <string name="app_name">GitHub Search</string>
     <string name="settings">Settings</string>
-    <string name="search">Поиск</string>
-    <string name="cancel">Отмена</string>
+    <string name="search">Search</string>
 
     <string name="github_repository">GitHub repository</string>
     <string name="project_name">Project Name</string>
 
     <!-- Synchronization-->
-    <string name="sync_start">Pапущена синхронизация...</string>
-    <string name="questions_Sync">Скачать данные с сервера?</string>
-    <string name="syncing">Выполняется синхронизация с сервером.</string>
-    <string name="sync_success">Синхронизация успешная.</string>
-    <string name="sync_error">Ошибка синхронизации.</string>
-    <string name="sync_cancel">Отменено синхронизацию.</string>
-    <string name="sync_timeout">Закончилось время синхронизации.</string>
-    <string name="error_internet_connecting">Отсутствует соединение с интернетом!</string>
-    <string name="error_no_data">Отсутствуют данные! Нужно загрузить данные с сервера!</string>
-    <string name="error_data_server">Ошибка обработки данных на сервере!</string>
-    <string name="error_data_not_found">Данные не найдено!</string>
-    <string name="error_retrieving_data">Ошибка получения данных!</string>
-    <string name="error_connection_server">Соединение с сервером не установлено!</string>
-    <string name="error_no_data_search">На серевере не найдено данных!</string>
-    <string name="text_search_empry">Не указан текст для поиска!</string>
+    <string name="sync_error">Error search.</string>
+    <string name="sync_cancel">Cancel search.</string>
+    <string name="sync_timeout">Time out.</string>
+    <string name="error_internet_connecting">No internet connection!</string>
+    <string name="error_data_server">Error processing data on the server!</string>
+    <string name="error_data_not_found">Data not found!</string>
+    <string name="error_retrieving_data">Error retrieving data!</string>
+    <string name="error_connection_server">Connection to the server is not installed!</string>
+    <string name="error_no_data_search">No data found on the server!</string>
+    <string name="text_search_empry">No text found for search!</string>
 
-    <string name="questions_title_info">Инфо</string>
-    <string name="questions_answer_yes">Да</string>
-    <string name="questions_answer_save">Сохранить</string>
-    <string name="questions_answer_no">Нет</string>
-    <string name="questions_answer_cancel">Отменить</string>
+    <string name="questions_title_info">Info</string>
+    <string name="questions_answer_yes">Yes</string>
+    <string name="questions_answer_no">No</string>
+    <string name="questions_answer_cancel">Cancel</string>
     <string name="questions_answer_ok">Ок</string>
 
-    <string name="repo_name">наим.</string>
-    <string name="repo_id">ид.</string>
+    <string name="owner_not_found">Organization not found</string>
 </resources>

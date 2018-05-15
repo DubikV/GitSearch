@@ -6,4 +6,5 @@
     <dimen name="margin_cap">10dp</dimen>
     <dimen name="avatar_size">95dp</dimen>
     <dimen name="image_size">25dp</dimen>
+    <dimen name="margin_fab">25dp</dimen>
 </resources>

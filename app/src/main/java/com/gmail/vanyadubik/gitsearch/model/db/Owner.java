@@ -27,18 +27,14 @@ public class Owner {
     @ColumnInfo(name = "location")
     private String location;
 
-    @ColumnInfo(name = "name_filter")
-    private String nameFilter;
-
     public Owner(int id, String login, String avatar,
-                 String htmlUrl, String blog, String location, String nameFilter) {
+                 String htmlUrl, String blog, String location) {
         this.id = id;
         this.login = login;
         this.avatar = avatar;
         this.htmlUrl = htmlUrl;
         this.blog = blog;
         this.location = location;
-        this.nameFilter = nameFilter;
     }
 
     public int getId() {
@@ -87,14 +83,6 @@ public class Owner {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public String getNameFilter() {
-        return nameFilter;
-    }
-
-    public void setNameFilter(String nameFilter) {
-        this.nameFilter = nameFilter;
     }
 }
 

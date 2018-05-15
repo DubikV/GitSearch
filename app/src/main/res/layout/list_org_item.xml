@@ -46,7 +46,8 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/text_size"/>
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/location"
@@ -70,7 +71,7 @@
                     android:layout_weight="1"
                     android:autoLink="web"
                     android:gravity="left"
-                    android:textColor="@color/colorBlue"
+                    android:textColorLink="@color/colorGreen"
                     android:textSize="@dimen/text_size"/>
 
 

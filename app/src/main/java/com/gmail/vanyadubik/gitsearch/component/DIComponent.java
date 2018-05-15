@@ -1,5 +1,6 @@
 package com.gmail.vanyadubik.gitsearch.component;
 
+import com.gmail.vanyadubik.gitsearch.activity.ReposActivity;
 import com.gmail.vanyadubik.gitsearch.activity.SearchActivity;
 import com.gmail.vanyadubik.gitsearch.modules.ActivityUtilsApiModule;
 import com.gmail.vanyadubik.gitsearch.modules.DataApiModule;
@@ -19,4 +20,5 @@ import dagger.Component;
 public interface DIComponent {
     void inject(SyncIntentService syncIntentService);
     void inject(SearchActivity searchActivity);
+    void inject(ReposActivity reposActivity);
 }

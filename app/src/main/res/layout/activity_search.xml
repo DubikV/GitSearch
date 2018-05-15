@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.gmail.vanyadubik.gitsearch.activity.SearchActivity">
+    tools:context="com.gmail.vanyadubik.gitsearch.activity.SearchActivity"
+    android:background="@color/colorWhite">
 
 
     <LinearLayout
         android:id="@+id/container_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_cap_top"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_cap_top">
 
         <TextView
             android:layout_width="match_parent"
@@ -24,11 +25,7 @@
             android:textColor="@color/colorAccent"
             android:text="@string/project_name"/>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.gmail.vanyadubik.gitsearch.ui.DrawableEditText
+        <com.gmail.vanyadubik.gitsearch.ui.DrawableEditText
                 android:id="@+id/search_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,22 +37,35 @@
                 android:textSize="@dimen/text_size"
                 app:drawableRightCompat="@drawable/ic_clear"/>
 
-        </android.support.design.widget.TextInputLayout>
-
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_searc_result"
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:divider="@null"
-            android:dividerHeight="2dp"
-            android:layout_margin="@dimen/margin_cap">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_gravity="center_horizontal"
+            android:clickable="false"
+            android:padding="5dp"/>
 
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_searc_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_cap"
+        android:divider="@null"
+        android:dividerHeight="2dp">
+    </android.support.v7.widget.RecyclerView>
 
-
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/owner_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="0dp"
+        android:src="@drawable/ic_arrow_upward"
+        android:layout_marginRight="@dimen/margin_fab"
+        android:layout_marginBottom="@dimen/margin_fab"
+        android:layout_gravity="bottom|end"
+        app:fabSize="auto"
+        app:elevation="0dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

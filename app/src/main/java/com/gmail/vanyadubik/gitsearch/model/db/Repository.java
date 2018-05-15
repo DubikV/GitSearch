@@ -48,13 +48,9 @@ public class Repository {
     @ColumnInfo(name = "owner_id")
     private int ownerId;
 
-    @ColumnInfo(name = "name_filter")
-    private String nameFilter;
-
     public Repository(int id, String name, String full_name, boolean priv, String url,
                       String description, String dateCreate, String dateUpdate, int size,
-                      int watchers, double score, String defBranch, int ownerId,
-                      String nameFilter) {
+                      int watchers, double score, String defBranch, int ownerId) {
         this.id = id;
         this.name = name;
         this.full_name = full_name;
@@ -68,7 +64,6 @@ public class Repository {
         this.score = score;
         this.defBranch = defBranch;
         this.ownerId = ownerId;
-        this.nameFilter = nameFilter;
     }
 
     public int getId() {
@@ -173,15 +168,6 @@ public class Repository {
 
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
-    }
-
-
-    public String getNameFilter() {
-        return nameFilter;
-    }
-
-    public void setNameFilter(String nameFilter) {
-        this.nameFilter = nameFilter;
     }
 }
 
