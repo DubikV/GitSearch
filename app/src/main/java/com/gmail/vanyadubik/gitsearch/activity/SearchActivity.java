@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
@@ -35,11 +36,15 @@ import com.gmail.vanyadubik.gitsearch.utils.ErrorUtils;
 import com.gmail.vanyadubik.gitsearch.utils.NetworkUtils;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_ERROR_SYNC;
 import static com.gmail.vanyadubik.gitsearch.common.Consts.STATUS_FINISHED_SYNC;
@@ -49,7 +54,8 @@ import static com.gmail.vanyadubik.gitsearch.service.sync.SyncIntentService.SYNC
 
 public class SearchActivity extends AppCompatActivity implements SyncReceiver.Receiver {
 
-    public static final int duration = 400;
+    public static final int DURATION = 400;
+    public static final long TIME_DEPLAY = 1500;
 
     @Inject
     DataBase dataBase;
@@ -88,6 +94,11 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
             }
         });
 
+        final Handler mHandler = new Handler() {
+            public void handleMessage(Message msg){
+                searchET.dismissDropDown();
+                searchData();
+            }};
         searchET = (AppCompatAutoCompleteTextView) findViewById(R.id.search_text);
         searchET.setOnTouchListener(new View.OnTouchListener() {
             final int DRAWABLE_RIGHT = 2;
@@ -105,15 +116,35 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
             }
         });
         searchET.addTextChangedListener(new TextWatcher() {
+            boolean isTyping = false;
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            private Timer timer = new Timer();
             @Override
-            public void afterTextChanged(Editable s) {
-                if(s.length()>3){
+            public void afterTextChanged(final Editable s) {
+                if(s.length()==4){
                     searchET.dismissDropDown();
                     searchData();
+                }else {
+                    if (!isTyping) {
+                        isTyping = true;
+                    }
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    isTyping = false;
+                                    if(s.length()>4){
+                                        mHandler.sendEmptyMessage(0);
+                                    }
+                                }
+                            },
+                            TIME_DEPLAY
+                    );
                 }
             }
         });
@@ -191,11 +222,25 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
             return;
         }
 
-//        if(searchET.getText().toString().equalsIgnoreCase(dataBase.searchHistoryDao().getLastText().toString())) {
-//            initSearchData();
-//        }else{
-            startSync();
-//        }
+        dataBase.searchTextDataDao().getLastText()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableSingleObserver<String>() {
+                    @Override
+                    public void onSuccess(String text){
+                        if(searchET.getText().toString().equalsIgnoreCase(text)) {
+                            initSearchData();
+                        }else{
+                            startSync();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        startSync();
+                    }
+                });
     }
 
     private void initSearchData(){
@@ -261,23 +306,23 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
         if (ownersList.size()>0) {
             recyclerView.setVisibility(View.VISIBLE);
             ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y", 0);
-            objectanimator.setDuration(duration);
+            objectanimator.setDuration(DURATION);
             objectanimator.start();
         } else {
             recyclerView.setVisibility(View.GONE);
             ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y", getResources().getDimension(R.dimen.margin_cap_top));
-            objectanimator.setDuration(duration);
+            objectanimator.setDuration(DURATION);
             objectanimator.start();
         }
 
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-        layoutParams.setMargins(
-                (int) getResources().getDimension(R.dimen.margin_cap),
-                contSearch.getHeight(),
-                (int) getResources().getDimension(R.dimen.margin_cap),
-                (int) getResources().getDimension(R.dimen.margin_cap));
-
-        recyclerView.setLayoutParams(layoutParams);
+//        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
+//        layoutParams.setMargins(
+//                (int) getResources().getDimension(R.dimen.margin_cap),
+//                contSearch.getHeight(),
+//                (int) getResources().getDimension(R.dimen.margin_cap),
+//                (int) getResources().getDimension(R.dimen.margin_cap));
+//
+//        recyclerView.setLayoutParams(layoutParams);
     }
 
 

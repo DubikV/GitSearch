@@ -3,6 +3,7 @@ package com.gmail.vanyadubik.gitsearch.model.db;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -23,7 +24,10 @@ public interface RepositoryDao {
     Flowable<List<Repository>> getByOwnerId(int ownerId);
 
     @Insert
-    void insert(Repository... repositories);
+    void insert(Repository repositories);
+
+    @Update
+    void update(Repository repository);
 
     @Insert
     void insertList(List<Repository> repositories);

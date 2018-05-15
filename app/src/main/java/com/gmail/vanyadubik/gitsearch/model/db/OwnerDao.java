@@ -3,6 +3,7 @@ package com.gmail.vanyadubik.gitsearch.model.db;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public interface OwnerDao {
 
     @Insert
     void insert(Owner... owners);
+
+    @Update
+    void update(Owner owner);
 
     @Insert
     void insertList(List<Owner> owners);

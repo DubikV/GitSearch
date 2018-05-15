@@ -14,13 +14,13 @@ public interface SearchHistoryDao {
     Flowable<List<String>> getAll();
 
     @Query("SELECT text FROM search_history  ORDER BY date DESC LIMIT 1")
-    String getLastText();
+    Flowable<String> getLastText();
 
     @Query("SELECT COUNT(*) from search_history")
     int count();
 
     @Insert
-    void insert(SearchHistory... searchHistories);
+    void insert(SearchHistory searchHistories);
 
     @Insert
     void insertList(List<SearchHistory> searchHistories);

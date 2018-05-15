@@ -12,6 +12,7 @@ import com.gmail.vanyadubik.gitsearch.model.db.DataBase;
 import com.gmail.vanyadubik.gitsearch.model.db.Owner;
 import com.gmail.vanyadubik.gitsearch.model.db.Repository;
 import com.gmail.vanyadubik.gitsearch.model.db.SearchHistory;
+import com.gmail.vanyadubik.gitsearch.model.db.SearchTextData;
 import com.gmail.vanyadubik.gitsearch.model.json.DownloadResponse;
 import com.gmail.vanyadubik.gitsearch.model.json.OwnerDTO;
 import com.gmail.vanyadubik.gitsearch.model.json.ResultItemDTO;
@@ -118,8 +119,10 @@ public class SyncIntentService extends IntentService {
 
         dataBase.ownerDao().deleteAll();
         dataBase.repositoryDao().deleteAll();
+        dataBase.searchTextDataDao().deleteAll();
         dataBase.searchHistoryDao().delete(searchFilter);
         dataBase.searchHistoryDao().insert(new SearchHistory(searchFilter, new Date().getTime()));
+
 
         for (ResultItemDTO resultItemDTO : resultItemDTOList) {
             Repository repository = convertRepository(resultItemDTO);
@@ -145,6 +148,13 @@ public class SyncIntentService extends IntentService {
             }
 
         }
+
+        try {
+            dataBase.searchTextDataDao().insert(new SearchTextData(searchFilter));
+        } catch (Exception exception) {
+            dataBase.searchTextDataDao().update(new SearchTextData(searchFilter));
+        }
+
         return true;
     }
 

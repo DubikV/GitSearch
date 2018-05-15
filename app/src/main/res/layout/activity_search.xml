@@ -45,16 +45,18 @@
             android:clickable="false"
             android:padding="5dp"/>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_searc_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_cap"
+            android:divider="@null"
+            android:dividerHeight="2dp">
+        </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_searc_result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_cap"
-        android:divider="@null"
-        android:dividerHeight="2dp">
-    </android.support.v7.widget.RecyclerView>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/owner_up"
