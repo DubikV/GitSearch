@@ -19,11 +19,5 @@ public interface SyncService {
 
     @GET
     Call<OwnerDTO> getOwner(@Url String url);
-//
-//    @GET(CONNECT_PATTERN_URL)
-//    Observable<DownloadResponse> search(@QueryMap Map<String, String> params);
-
-//    @GET
-//    Observable<OwnerDTO> getOwner(@Url String url);
 
 }

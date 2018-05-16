@@ -2,6 +2,7 @@ package com.gmail.vanyadubik.gitsearch.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +16,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -267,7 +270,7 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
 
                                 });
 
-                        hideViewLoad();
+                        hideViewLoad(false);
 
                         if (ownersList.size()==0) {
                             activityUtils.showMessage(getResources().getString(R.string.error_data_not_found), SearchActivity.this);
@@ -286,7 +289,7 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
 
         switch (resultCode) {
             case STATUS_STARTED_SYNC:
-                progressBar.setVisibility(View.VISIBLE);
+                hideViewLoad(true);
                 break;
             case STATUS_FINISHED_SYNC:
                 initSearchData();
@@ -294,37 +297,53 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
             case STATUS_ERROR_SYNC:
                 String error = resultData.getString(Intent.EXTRA_TEXT);
                 activityUtils.showMessage(error, this);
-                progressBar.setVisibility(View.GONE);
+                hideViewLoad(false);
                 break;
         }
 
     }
 
-    private void hideViewLoad(){
+    private void hideViewLoad(boolean isLoad){
 
-        progressBar.setVisibility(View.GONE);
+        if(isLoad){
+            progressBar.setVisibility(View.VISIBLE);
+        }else{
+            progressBar.setVisibility(View.GONE);
+        }
+
+        ViewGroup.LayoutParams layoutParams = (ViewGroup.LayoutParams) contSearch.getLayoutParams();
+
         if (ownersList.size()>0) {
             recyclerView.setVisibility(View.VISIBLE);
+            layoutParams.height = getHeichContainer();
             ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y",
                     getResources().getDimension(R.dimen.margin_cap));
             objectanimator.setDuration(DURATION);
             objectanimator.start();
+
         } else {
             recyclerView.setVisibility(View.GONE);
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y",
                     getResources().getDimension(R.dimen.margin_cap_top));
             objectanimator.setDuration(DURATION);
             objectanimator.start();
         }
+        contSearch.setLayoutParams(layoutParams);
+    }
 
-//        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-//        layoutParams.setMargins(
-//                (int) getResources().getDimension(R.dimen.margin_cap),
-//                contSearch.getHeight(),
-//                (int) getResources().getDimension(R.dimen.margin_cap),
-//                (int) getResources().getDimension(R.dimen.margin_cap));
-//
-//        recyclerView.setLayoutParams(layoutParams);
+    private int getHeichContainer(){
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+
+        Rect rectgle= new Rect();
+        Window window= getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectgle);
+        int StatusBarHeight= rectgle.top;
+
+        return height - (StatusBarHeight +((int)getResources().getDimension(R.dimen.margin_cap) *2 ));
     }
 
 

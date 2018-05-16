@@ -117,9 +117,9 @@ public class SyncIntentService extends IntentService {
     private boolean updateDb(DownloadResponse response) {
         List<ResultItemDTO> resultItemDTOList = response.getItems();
 
-        dataBase.ownerDao().deleteAll();
-        dataBase.repositoryDao().deleteAll();
-        dataBase.searchTextDataDao().deleteAll();
+//        dataBase.ownerDao().deleteAll();
+//        dataBase.repositoryDao().deleteAll();
+//        dataBase.searchTextDataDao().deleteAll();
         dataBase.searchHistoryDao().delete(searchFilter);
         dataBase.searchHistoryDao().insert(new SearchHistory(searchFilter, new Date().getTime()));
 
