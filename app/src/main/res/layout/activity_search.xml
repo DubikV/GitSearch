@@ -9,54 +9,70 @@
     android:background="@color/colorWhite">
 
 
-    <LinearLayout
-        android:id="@+id/container_search"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/margin_cap_top">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/container_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_margin="@dimen/margin_cap"
-            android:textSize="@dimen/text_cap_size"
-            android:textColor="@color/colorAccent"
-            android:text="@string/project_name"/>
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/margin_cap_top"
+            android:layout_marginLeft="@dimen/margin_cap"
+            android:layout_marginRight="@dimen/margin_cap"
+            android:layout_marginBottom="@dimen/margin_cap"
+            android:background="@color/colorGreen">
 
-        <com.gmail.vanyadubik.gitsearch.ui.DrawableEditText
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/text_cap_size"
+                android:textColor="@color/colorAccent"
+                android:text="@string/project_name"
+                android:id="@+id/textView"/>
+
+            <com.gmail.vanyadubik.gitsearch.ui.DrawableEditText
                 android:id="@+id/search_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_cap"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/textView"
                 android:ems="10"
+                android:hint="@string/github_repository"
                 android:inputType="textPersonName"
                 android:textColor="@color/colorAccent"
-                android:hint="@string/github_repository"
                 android:textSize="@dimen/text_size"
-                app:drawableRightCompat="@drawable/ic_clear"/>
+                app:drawableRightCompat="@drawable/ic_clear" />
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/container_search"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:clickable="false"
-            android:padding="5dp"/>
+            android:padding="5dp" />
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_searc_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_cap"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/progress_bar"
             android:divider="@null"
-            android:dividerHeight="2dp">
+            android:dividerHeight="2dp"
+            android:layout_margin="2dp">
+
         </android.support.v7.widget.RecyclerView>
 
-    </LinearLayout>
-
-
+    </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/owner_up"

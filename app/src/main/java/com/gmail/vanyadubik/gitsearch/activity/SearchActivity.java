@@ -305,12 +305,14 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
         progressBar.setVisibility(View.GONE);
         if (ownersList.size()>0) {
             recyclerView.setVisibility(View.VISIBLE);
-            ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y", 0);
+            ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y",
+                    getResources().getDimension(R.dimen.margin_cap));
             objectanimator.setDuration(DURATION);
             objectanimator.start();
         } else {
             recyclerView.setVisibility(View.GONE);
-            ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y", getResources().getDimension(R.dimen.margin_cap_top));
+            ObjectAnimator objectanimator = ObjectAnimator.ofFloat(contSearch,"y",
+                    getResources().getDimension(R.dimen.margin_cap_top));
             objectanimator.setDuration(DURATION);
             objectanimator.start();
         }
