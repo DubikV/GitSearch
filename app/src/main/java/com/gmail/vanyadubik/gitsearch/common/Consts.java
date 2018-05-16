@@ -10,7 +10,7 @@ public final class Consts {
     // Settings
     public final static int CONNECT_TIMEOUT_SECONDS_RETROFIT = 180;
     public final static String CONNECT_SERVER_URL = "https://api.github.com/";
-    public final static String CONNECT_PATTERN_URL = "search/repositoriessss";
+    public final static String CONNECT_PATTERN_URL = "search/repositories";
 
     // DB
     public final static String NAME_DATA_BASE_ROOM = "gitsearch-db";

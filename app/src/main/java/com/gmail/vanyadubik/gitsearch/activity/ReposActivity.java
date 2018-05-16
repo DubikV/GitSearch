@@ -73,13 +73,21 @@ public class ReposActivity extends AppCompatActivity{
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (recyclerView != null && recyclerView.getChildCount() > 0 && layoutManager.findFirstVisibleItemPosition() == 0) {
-                    if (recyclerView.getChildAt(0).getTop() < -activityUtils.dpToPx(ReposActivity.this, 16)) {
-                        ownerUpFab.animate().translationX(0).setInterpolator(new LinearInterpolator()).start();
+                if (recyclerView != null && recyclerView.getChildCount() > 0
+                        && layoutManager.findFirstVisibleItemPosition() == 0) {
+
+                    if (recyclerView.getChildAt(0).getTop() <
+                            -activityUtils.dpToPx(ReposActivity.this, 16)) {
+
+                        ownerUpFab.animate().translationX(0)
+                                .setInterpolator(new LinearInterpolator()).start();
+
                         ownerUpFab.setVisibility(View.VISIBLE);
                     } else {
                         ownerUpFab.animate().translationX(ownerUpFab.getWidth() +
-                                getResources().getDimension(R.dimen.margin_fab)).setInterpolator(new LinearInterpolator()).start();
+                                getResources().getDimension(R.dimen.margin_fab))
+                                .setInterpolator(new LinearInterpolator()).start();
+
                         ownerUpFab.setVisibility(View.GONE);
                     }
                 }
@@ -145,7 +153,8 @@ public class ReposActivity extends AppCompatActivity{
                     @Override
                     public void accept(List<Repository> repositories) throws Exception {
 
-                        SpannableString spanString = new SpannableString(owner.getLogin()+" Repositories ("+repositories.size()+")");
+                        SpannableString spanString = new SpannableString(owner.getLogin()
+                                +" "+getString(R.string.repositories_title)+" ("+repositories.size()+")");
                         spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
 
                         getSupportActionBar().setTitle(spanString);

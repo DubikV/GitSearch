@@ -6,4 +6,5 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorGreen">#34d1a2</color>
     <color name="colorBackground">#cacaca</color>
+    <color name="colorTrans">#AA000000</color>
 </resources>

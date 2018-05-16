@@ -70,7 +70,8 @@ public class OrgRecyclerAdapter extends RecyclerView.Adapter {
                             .replace("https://",""): "");
 
             Glide.with(context).
-                    load(owner.getAvatar() == null ? android.R.drawable.ic_menu_gallery : owner.getAvatar())
+                    load(owner.getAvatar() == null ?
+                            android.R.drawable.ic_menu_gallery : owner.getAvatar())
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(((OrgViewHolder)holder).mAvatar);

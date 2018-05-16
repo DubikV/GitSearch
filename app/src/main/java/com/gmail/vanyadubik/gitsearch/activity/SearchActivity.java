@@ -38,6 +38,7 @@ import com.gmail.vanyadubik.gitsearch.utils.ActivityUtils;
 import com.gmail.vanyadubik.gitsearch.utils.ErrorUtils;
 import com.gmail.vanyadubik.gitsearch.utils.NetworkUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -75,7 +76,7 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
     private AppCompatAutoCompleteTextView searchET;
     private SearchHistoryListAdapter searhHistAdapter;
     private OrgRecyclerAdapter adapter;
-    private List<Owner> ownersList;
+    private List<Owner> ownersList = new ArrayList<>();
     private List<String> searhHist;
 
     @Override
@@ -168,13 +169,20 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (recyclerView != null && recyclerView.getChildCount() > 0 && layoutManager.findFirstVisibleItemPosition() == 0) {
-                    if (recyclerView.getChildAt(0).getTop() < -activityUtils.dpToPx(SearchActivity.this, 16)) {
-                        ownerUpFab.animate().translationX(0).setInterpolator(new LinearInterpolator()).start();
+                if (recyclerView != null && recyclerView.getChildCount() > 0
+                        && layoutManager.findFirstVisibleItemPosition() == 0) {
+
+                    if (recyclerView.getChildAt(0).getTop() <
+                            -activityUtils.dpToPx(SearchActivity.this, 16)) {
+                        ownerUpFab.animate().translationX(0)
+                                .setInterpolator(new LinearInterpolator()).start();
+
                         ownerUpFab.setVisibility(View.VISIBLE);
                     } else {
                         ownerUpFab.animate().translationX(ownerUpFab.getWidth() +
-                                getResources().getDimension(R.dimen.margin_fab)).setInterpolator(new LinearInterpolator()).start();
+                                getResources().getDimension(R.dimen.margin_fab))
+                                .setInterpolator(new LinearInterpolator()).start();
+
                         ownerUpFab.setVisibility(View.GONE);
                     }
                 }
@@ -200,7 +208,8 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
                     @Override
                     public void accept(List<String> stringList) throws Exception {
                         searhHist = stringList;
-                        searhHistAdapter = new SearchHistoryListAdapter(SearchActivity.this, searhHist);
+                        searhHistAdapter = new SearchHistoryListAdapter(
+                                                   SearchActivity.this, searhHist);
                         searchET.setThreshold(1);
                         searchET.setAdapter(searhHistAdapter);
                     }
@@ -212,7 +221,8 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
     private void startSync(){
 
         SyncReceiver mReceiver = new SyncReceiver(new Handler(), this);
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, SyncIntentService.class);
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, this,
+                SyncIntentService.class);
         intent.putExtra(SYNC_RECEIVER, mReceiver);
         intent.putExtra(SYNC_FILTER_SEARCH, searchET.getText().toString());
         startService(intent);
@@ -221,7 +231,8 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
     private void searchData(){
 
         if (TextUtils.isEmpty(searchET.getText().toString())) {
-            activityUtils.showMessage(getResources().getString(R.string.text_search_empry), this);
+            activityUtils.showMessage(getResources()
+                    .getString(R.string.text_search_empry), this);
             return;
         }
 
@@ -264,17 +275,15 @@ public class SearchActivity extends AppCompatActivity implements SyncReceiver.Re
                                         if(searhHistAdapter!=null){
                                             searhHistAdapter.notifyDataSetChanged();
                                         }else{
-                                            searhHistAdapter = new SearchHistoryListAdapter(SearchActivity.this, searhHist);
+                                            searhHistAdapter =
+                                                    new SearchHistoryListAdapter(
+                                                            SearchActivity.this, searhHist);
                                         }
                                     }
 
                                 });
 
                         hideViewLoad(false);
-
-                        if (ownersList.size()==0) {
-                            activityUtils.showMessage(getResources().getString(R.string.error_data_not_found), SearchActivity.this);
-                        }
                         adapter = new OrgRecyclerAdapter(SearchActivity.this, ownersList);
                         recyclerView.setAdapter(adapter);
 

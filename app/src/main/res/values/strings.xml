@@ -25,4 +25,10 @@
     <string name="questions_answer_ok">Ок</string>
 
     <string name="owner_not_found">Organization not found</string>
+
+    <string name="repositories_title">Repositories</string>
+    <string name="date_create">Crt.</string>
+    <string name="date_update">Upd.</string>
+    <string name="size">Size</string>
+    <string name="watchers">Watchers</string>
 </resources>
